@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AppHeaderComponent } from './app-header/app-header.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  imports: [AppHeaderComponent],
 })
 export class AppComponent {
   title = 'pi-game';
