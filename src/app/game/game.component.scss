@@ -1,3 +1,27 @@
 :host {
   display: block;
 }
+
+.game {
+  border: 2px solid rgb(24, 18, 149);
+  width: 70%;
+  min-height: 500px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.input-wrapper {
+  padding: 10px;
+  font-size: 1.5rem;
+
+  .valid-digit {
+    color: green;
+  }
+  .error-digit {
+    color: red;
+  }
+
+}

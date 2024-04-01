@@ -1,3 +1,23 @@
 <div class="wrapper">
   <app-game-rules />
+  <div class="game">
+    <div class="best-score">Best score: <span>0</span> digits</div>
+    <div class="best-time">Best time: <span>0</span></div>
+    <div class="score">Score: <span>0</span> digits</div>
+    <div class="time">
+      Time: <span>0</span>:<span>00</span>'<span>000</span>
+    </div>
+
+    <div class="input-wrapper">
+      <span class="pi-prefix">3.</span>
+      <span class="valid-digit">{{ input }}</span>
+      <span *ngIf="gameStatus === 'active'" class="cursor">_</span>
+      <span *ngIf="error" class="error-digit"></span>
+    </div>
+
+    <div class="actions">
+      <button *ngIf="gameStatus === 'stopped'" (click)="play()">Play</button>
+      <button>Options</button>
+    </div>
+  </div>
 </div>
