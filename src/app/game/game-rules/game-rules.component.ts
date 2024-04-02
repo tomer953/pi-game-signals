@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  computed,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-game-rules',
@@ -8,4 +14,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./game-rules.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameRulesComponent {}
+export class GameRulesComponent {
+  // let convert input to a signal, so we can use computed if needed
+  @Input({ required: true, alias: 'points' }) set _points(x: number) {
+    this.points.set(x);
+  }
+  points = signal(1);
+
+  // computed on input
+  pointsStr = computed(() => `<<${this.points()}>>}`);
+}

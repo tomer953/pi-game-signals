@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  effect,
   HostListener,
 } from '@angular/core';
 import { GameRulesComponent } from './game-rules/game-rules.component';
 import { PI_STR } from './pi';
+import { Rank } from './rank.enum';
 
 @Component({
   selector: 'app-game',
@@ -16,15 +20,42 @@ import { PI_STR } from './pi';
   imports: [CommonModule, GameRulesComponent],
 })
 export class GameComponent {
-  input = '';
-  error = false;
-  gameStatus: 'active' | 'stopped' = 'stopped';
+  Rank = Rank;
+  isActive = signal(false);
+  i = signal(0);
+  currDigit = computed(() => PI_STR[this.i() + 2]);
+  errorDigit = signal<string | null>(null);
+  input = signal('');
+  isError = computed(() => this.errorDigit() !== null);
+  pointsPerDigits = signal(1);
+  score = computed(() => this.pointsPerDigits() * this.input().length);
+  bestScore = signal(0);
+  bestScoreEffect = effect(
+    () => {
+      if (this.score() > this.bestScore()) {
+        this.bestScore.set(this.score());
+      }
+    },
+    { allowSignalWrites: true }
+  );
+
+  rank = computed(() => {
+    const score = this.score();
+    if (score > 40) {
+      return Rank.EXPERT;
+    } else if (score > 30) {
+      return Rank.ADVANCED;
+    } else if (score > 20) {
+      return Rank.INTERMIDIATE;
+    }
+    return Rank.BEGINNER;
+  });
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     const digit = event.key;
 
-    if (this.gameStatus === 'stopped') {
+    if (!this.isActive) {
       return;
     }
 
@@ -35,12 +66,26 @@ export class GameComponent {
   }
 
   digitPressed(digit: string) {
-    this.input += digit;
+    // if we right
+    if (this.currDigit() === digit) {
+      this.input.update((input) => input + digit);
+      this.i.update((i) => i + 1);
+    }
+    // set error digit
+    else {
+      this.errorDigit.set(digit);
+      this.stop();
+    }
   }
 
   play() {
-    this.error = false;
-    this.input = '';
-    this.gameStatus = 'active';
+    this.errorDigit.set(null);
+    this.i.set(0);
+    this.input.set('');
+    this.isActive.set(true);
+  }
+
+  stop() {
+    this.isActive.set(false);
   }
 }
